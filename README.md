@@ -28,4 +28,4 @@ id	  |   estado   |   nombre y apellido	|   email	                  |   rol     
 ![imagen](https://user-images.githubusercontent.com/58560797/227801340-d8ef7e3a-2890-49af-9e41-baea3b5d0f9e.png)
 
 ## calendar_id
-googleCalendarId: '<calendarId>@group.calendar.google.com'
+googleCalendarId: '<`calendarId`>@group.calendar.google.com'
