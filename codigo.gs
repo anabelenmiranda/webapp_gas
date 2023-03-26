@@ -1,7 +1,7 @@
 const ssUsers = SpreadsheetApp.openById(
   "<spreedshit_id>"
 );
-// const sheetFecha = ssUsers.getSheetByName('datosDesplegables');
+
 const sheetlistadoUsuariosFinales = ssUsers.getSheetByName("listadoUsuarios");
 
 const calendarioEventos = CalendarApp.getCalendarById(
@@ -49,9 +49,6 @@ function obtenerEventosPASADO() {
 function obtenerEventos(inicio, fin) {
   var listEvents = [];
   var listaEventos = calendarioEventos.getEvents(inicio, fin);
-
-  //Logger.log(fechaHoy.toLocaleDateString());
-  //Logger.log(listaEventos);
 
   for (i in listaEventos) {
     listEvents.push([
