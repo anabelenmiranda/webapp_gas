@@ -22,7 +22,7 @@ id	  |   estado   |   nombre y apellido	|   email	                  |   rol     
 15	  |  `activo`  |   simon gutierrez    |   sgutierrez@gmail.com	  |   comercial       |
 
 ## How to get spreadsheet_id ?
-https:// docs.google.com/spreadsheet/d/ `spreadsheetId` /edit#gid=0
+'https://docs.google.com/spreadsheets/d/`spreadsheetId`/edit#gid=0'
 
 ## calendar
 ![imagen](https://user-images.githubusercontent.com/58560797/227801340-d8ef7e3a-2890-49af-9e41-baea3b5d0f9e.png)
