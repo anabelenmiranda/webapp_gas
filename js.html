@@ -1,0 +1,296 @@
+<script>
+    const today = new Date().toLocaleDateString();
+    const tomorrow = new Date(
+        new Date().getTime() + 24 * 60 * 60 * 1000
+    ).toLocaleDateString();
+    const afterTomorrow = new Date(
+        new Date().getTime() + 48 * 60 * 60 * 1000
+    ).toLocaleDateString();
+    const arrayDays = ["Today", "Tomorrow", "After Tomorrow"];
+    const leftArrow = document.getElementById("left-arrow");
+    const rightArrow = document.getElementById("right-arrow");
+    const fechaActual = document.getElementById("fechaActual");
+    const spanFecha = document.getElementById("spanFecha");
+    const divCalendario = document.getElementById("divCalendario");
+
+    window.addEventListener("load", (event) => {
+        fechaActual.textContent = arrayDays[0];
+        spanFecha.innerHTML = today;
+    });
+
+    const NOTIFICACION_OK = 1;
+    const NOTIFICACION_DANGER = 2;
+    const NOTIFICACION_WARNING = 3;
+    const NOTIFICACION_LOADING = 4;
+
+    function getPuestos(list) {
+        let result = [];
+        for (i = 0; i < list.length; i++) {
+            if (!result.includes(list[i][0].slice(0, 3))) {
+                result.push(list[i][0].slice(0, 3));
+            }
+        }
+        return result;
+    }
+
+    function deleteTable() {
+        let tablaEventos = document.getElementById("tablaEventos");
+        if (tablaEventos) tablaEventos.remove();
+    }
+
+    function crearTablaCalHOY() {
+        crearSpinner();
+
+        deleteTable();
+
+        google.script.run
+            .withSuccessHandler(crearTablaCorrectamente)
+            .withFailureHandler(crearTablaError)
+            .obtenerEventosHOY();
+
+    }
+
+    function crearTablaCalMANIANA() {
+        crearSpinner();
+
+        deleteTable();
+
+        google.script.run
+            .withSuccessHandler(crearTablaCorrectamente)
+            .withFailureHandler(crearTablaError)
+            .obtenerEventosMANIANA();
+    }
+
+    function crearTablaCalPASADO() {
+        crearSpinner();
+
+        deleteTable();
+
+        google.script.run
+            .withSuccessHandler(crearTablaCorrectamente)
+            .withFailureHandler(crearTablaError)
+            .obtenerEventosPASADO();
+    }
+
+    function crearTablaCorrectamente(eventos) {
+
+        cargarInteriorTabla(eventos);
+
+        eliminarSpinner();
+
+        crearNotificacion(
+            NOTIFICACION_OK,
+            "The data was obtained correctly",
+            "Ok"
+        );
+    }
+
+    function cargarInteriorTabla(eventos) {
+
+        deleteTable();
+
+        tablaEventos = document.createElement("table");
+        tablaEventos.classList.add("table", "table-dark", "table-hover", "rounded");
+        tablaEventos.id = "tablaEventos";
+
+        cargarHeader(tablaEventos, divCalendario);
+
+        let tablaBody = document.createElement("tbody");
+
+        ingresoDatosTablaEventos(eventos, tablaBody);
+
+        tablaEventos.appendChild(tablaBody);
+        divCalendario.appendChild(tablaEventos);
+
+    }
+
+    function cargarHeader(tabla) {
+        let tablaHeader = document.createElement("thead");
+        let tr = document.createElement("tr");
+        let th1 = document.createElement("th");
+        let th2 = document.createElement("th");
+        let th3 = document.createElement("th");
+
+        tr.appendChild(th1).textContent = "Position";
+        tr.appendChild(th2).textContent = "Name";
+        tr.appendChild(th3).textContent = "Hours";
+
+        tablaHeader.appendChild(tr);
+        tabla.appendChild(tablaHeader);
+    }
+
+    function ingresoDatosTablaEventos(eventos, tablaBody) {
+        const puestos = getPuestos(eventos);
+        puestos.forEach((puesto) => {
+            console.log(puesto);
+
+            for (let j = 0; j < eventos.length; j++) {
+                let item = eventos[j];
+                console.log(item);
+
+                if (item[0].includes(puesto)) {
+                    let fila = document.createElement("tr");
+                    let celda1 = document.createElement("td");
+                    celda1.textContent = item;
+                    celda1.classList.add("fw-semibold");
+                    fila.appendChild(celda1);
+
+                    let celda2 = document.createElement("td");
+                    celda2.textContent = item[0];
+                    fila.appendChild(celda2);
+
+                    let celda3 = document.createElement("td");
+                    celda3.textContent = item[1];
+                    fila.appendChild(celda3);
+
+                    tablaBody.appendChild(fila);
+                    colorPuesto(puesto, celda1);
+                };
+            };
+        });
+    }
+
+    function colorPuesto(puesto, celda) {
+        switch (puesto) {
+            case "DIR":
+                celda.textContent = "";
+                celda.textContent = "DIR";
+                celda.classList.add("text-danger");
+                break;
+
+            case "MNG":
+                celda.textContent = "";
+                celda.textContent = "MNG";
+                celda.classList.add("text-warning");
+                break;
+
+            case "LID":
+                celda.textContent = "";
+                celda.textContent = "LID";
+                celda.classList.add("text-success");
+                break;
+
+            case "SIS":
+                celda.textContent = "";
+                celda.textContent = "SIS";
+                celda.classList.add("text-info");
+                break;
+
+            case "COM":
+                celda.textContent = "";
+                celda.textContent = "COM";
+                celda.classList.add("text-info");
+                break;
+
+            default:
+                celda.textContent = "";
+                break;
+        }
+    }
+
+    function crearTablaError() {
+        crearNotificacion(
+            NOTIFICACION_DANGER,
+            "Los datos no se pudieron cargar",
+            "Algo salió mal"
+        );
+        eliminarSpinner();
+    }
+
+    function crearNotificacion(tipo, mensaje, titulo) {
+        let mensajeNotificacion = document.getElementById("mensajeNotificacion");
+        let tituloNotificacion = document.getElementById("tituloNotificacion");
+        let elementNotificacion = document.getElementById("notificacion");
+        let iconoNotificacion = document.getElementById("iconoNotificacion");
+        let notificacion = bootstrap.Toast.getOrCreateInstance(elementNotificacion);
+        mensajeNotificacion.textContent = mensaje;
+        tituloNotificacion.textContent = titulo;
+
+        switch (tipo) {
+            case NOTIFICACION_OK:
+                iconoNotificacion.className = "";
+                iconoNotificacion.classList.add("fa-solid", "fa-square-check");
+                elementNotificacion.classList.add("text-bg-info");
+                break;
+
+            case NOTIFICACION_WARNING:
+                iconoNotificacion.className = "";
+                iconoNotificacion.classList.add("fa-solid", "fa-triangle-exclamation");
+                elementNotificacion.style.backgroundColor = "#F7F144";
+                break;
+
+            case NOTIFICACION_DANGER:
+                iconoNotificacion.className = "";
+                iconoNotificacion.classList.add("fa-solid", "fa-ban");
+                elementNotificacion.style.backgroundColor = "#F75444";
+                break;
+
+            case NOTIFICACION_LOADING:
+                iconoNotificacion.className = "";
+                iconoNotificacion.classList.add("fa-solid", "fa-clock");
+                elementNotificacion.style.backgroundColor = "#69E6B4";
+                break;
+
+            default:
+                break;
+        }
+        notificacion.show();
+    }
+
+    function crearSpinner() {
+        let divSpinner = document.getElementById("divSpinner");
+
+        let spinner = document.getElementById("divLoader");
+        if (spinner) spinner.remove();
+
+        spinner = document.createElement("div");
+        spinner.classList.add("spinner-border", "text-warning", "m-5");
+        spinner.style.width = "4rem";
+        spinner.style.height = "4rem";
+        spinner.id = "divLoader";
+
+        let span = document.createElement("span");
+        span.classList.add("visually-hidden");
+        span.textContent = "Loading...";
+
+        spinner.appendChild(span);
+        divSpinner.appendChild(spinner);
+    }
+
+    function eliminarSpinner() {
+        let spinner = document.getElementById("divLoader");
+        if (spinner) spinner.remove();
+    }
+
+    function clickArrowLeft() {
+        if (fechaActual.textContent == arrayDays[0]) {
+            spanFecha.innerHTML = afterTomorrow;
+            fechaActual.textContent = arrayDays[2];
+            crearTablaCalPASADO();
+        } else if (fechaActual.textContent == arrayDays[1]) {
+            spanFecha.innerHTML = today;
+            fechaActual.textContent = arrayDays[0];
+            crearTablaCalHOY();
+        } else if (fechaActual.textContent == arrayDays[2]) {
+            spanFecha.innerHTML = tomorrow;
+            fechaActual.textContent = arrayDays[1];
+            crearTablaCalMANIANA();
+        }
+    }
+
+    function clickArrowRight() {
+        if (fechaActual.textContent == arrayDays[0]) {
+            spanFecha.innerHTML = tomorrow;
+            fechaActual.textContent = arrayDays[1];
+            crearTablaCalMANIANA();
+        } else if (fechaActual.textContent == arrayDays[1]) {
+            spanFecha.innerHTML = afterTomorrow;
+            fechaActual.textContent = arrayDays[2];
+            crearTablaCalPASADO();
+        } else if (fechaActual.textContent == arrayDays[2]) {
+            spanFecha.innerHTML = today;
+            fechaActual.textContent = arrayDays[0];
+            crearTablaCalHOY();
+        }
+    }
+</script>

@@ -1,0 +1,46 @@
+<main>
+
+    <div class="container-sm mb-4 text-center">
+        <p class="pt-4 fs-5 text-white">This is the Company X calendar for the date <span id="spanFecha"
+                class="fw-semibold"></span>, in the event of detecting any error in it, please contact your leader.</p>
+    </div>
+
+    <div id="manejador" class="fs-1 text-center">
+
+        <a type="button" class="btn btn-warning btn-md arrow" onclick="clickArrowLeft()">
+            <i class="fa-solid fa-angle-left text-dark d-inline" id="left-arrow"> </i>
+        </a>
+
+        <div class="d-inline" id="fechaActual"></div>
+
+        <a type="button" class="btn btn-warning btn-md arrow" onclick="clickArrowRight()">
+            <i class="fa-solid fa-angle-right text-dark d-inline" id="right-arrow"> </i>
+        </a>
+
+    </div>
+
+    <div class="container-sm mb-4 text-center" id="divSpinner">
+    </div>
+
+    <div class="container mb-4" id="divCalendario"></div>
+
+    <!-- Notificaciones -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+        <!-- toast -->
+        <div id="notificacion" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive"
+            aria-atomic="true">
+
+            <!-- header de notificacion -->
+            <div class="toast-header p-0">
+                <div class="icono-notificacion m-2"><i id="iconoNotificacion" class="fs-5"></i></div>
+                <strong class="me-auto" id="tituloNotificacion"></strong>
+                <button type="button" class="btn-close m-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+
+            <!-- texto de notificacion -->
+            <div class="toast-body" id="mensajeNotificacion"></div>
+        </div>
+    </div>
+
+</main>
