@@ -21,6 +21,11 @@ id	  |   estado   |   nombre y apellido	|   email	                  |   rol     
 14	  |  `activo`  |   florencia justo	  |   fjusto@gmail.com	      |   comercial       |
 15	  |  `activo`  |   simon gutierrez    |   sgutierrez@gmail.com	  |   comercial       |
 
+## spreadsheet_id
+![imagen](https://user-images.githubusercontent.com/58560797/227801516-d33c531c-8969-4d7c-b1b6-25603e0cca08.png)
 
 ## calendar
 ![imagen](https://user-images.githubusercontent.com/58560797/227801340-d8ef7e3a-2890-49af-9e41-baea3b5d0f9e.png)
+
+## calendar_id
+googleCalendarId: '<calendarId>@group.calendar.google.com'
